@@ -49,6 +49,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage[final]{pdfpages}
+
 %
 % \usepackage{mathptmx}      % use Times fonts if available on your TeX system
 %
@@ -228,7 +229,7 @@
 	Aside from the discrete Atari games, A3C was also tested for continuous action spaces and was able to learn reliable policies. 
 	GA3C combines A3C with GPU computation \cite{Babaeizadeh2017}.
     Following the concept of policy gradients, Schulman, et al. introduce \textit{Trust Region Policy Optimization} (TRPO) \cite{Schulman2015}.
-    TRPO can be seen as combination of minorization-maximization \cite{Hunter2004} and \textit{Natural Actor Critic} (NAC) \cite{Peters2008a}.
+    TRPO can be seen as combination of minorization-maximization \cite{Hunter2004} and \textit{Natural Actor Critic} (NAC) \cite{Peters2008}.
     They criticize that first order gradient methods are often overconfident and not accurate enough in curved areas, which results in losing already made learning progress. 
     Consequently, TRPO optimizes its policy by enforcing a trust region constraint. 
     The trust region constraint represents a pessimistic/lower bound on the performance of the policy and guarantees monotonic improvement locally around the current policy.	
