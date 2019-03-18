@@ -82,8 +82,10 @@
 
     \maketitle
     \begin{abstract}
-        Insert your abstract here. Include keywords, PACS and mathematical
-        subject classification numbers as needed.
+		This survey presents an overview of the current model-free deep reinforcement learning landscape. 
+		It provides a comparison of state-of-the art on-policy and off-policy algorithms in the value-based and policy-based domain.
+		Possible drawbacks are analyzed as well as possibilities to overcome those issues, resulting in new improvements.
+		Further, the survey shows application scenarios for difficult domains, including the game of Go, Starcraft II, Dota 2 and Rubik's Cube.
 		\keywords{Deep Reinforcement Learning \and Model-free \and Neural Networks}
     \end{abstract}
 
@@ -113,10 +115,11 @@
     \[
     Q_\pi(s,a) = \mathbb{E}\left[G_t|s_t =s,a_t=a,\pi\right] = \mathcal{R}(s,a) + \gamma \sum_{s\in\mathcal{S}}\mathcal{T}(s,a,s') \max_{a'}Q_\pi(s',a')
 	\]
-    In order to find the best policy, value-based methods are interested in finding the optimal action-value function $Q^*(s,a) =\max_\pi Q_\pi(s,a)$, which is equivalent to finding the optimal policy 
+    In order to find the best policy, value-based methods are interested in finding the optimal action-value function $Q^*(s,a) =\max_\pi Q_\pi(s,a)$, which can be computed iteratively by the Bellman operator:
     \[
-	\pi^*(s) = \argmax{a} \mathcal{R}(s,a) + \gamma \sum_{s\in\mathcal{S}}\mathcal{T}(s,a,s') \max_{a'}Q^*(s',a')
+	 Q_{t+1}(s,a) = \mathcal{R}(s,a) + \gamma \sum_{s\in\mathcal{S}}\mathcal{T}(s,a,s') \max_{a'}Q_t(s',a')
     \]
+    When $Q_t \approx Q^*$, the optimal policy can be computed by $\pi^*(s) \approx \argmax{a} Q_t(s,a)$.
     Alternatively, the optimal value function $V^*(s) = \mathbb{E}\left[G_t|s_t=s, \pi\right] = \max_{a} Q^*(s,a)$ can be used.\\
     In contrast to value-based methods, policy-based methods directly parameterize a policy $\pi(s;\theta)$. 
     One such method is REINFORCE \cite{Williams1992}, it updates the policy parameters $\theta$ in the direction $\nabla_\theta \mathbb{E}[G_t]\approx \nabla_\theta\log\pi(s_t;\theta)G_t$.
@@ -134,7 +137,7 @@
 	This allows to use a deterministic target policy, while sampling actions through a stochastic behavior policy. \cite[chapter 5]{Sutton2018}
 	\begin{figure}[!t]
 		\centering
-		\includegraphics[angle=90, height=.75\textheight]{images/tree2.pdf}
+		\includegraphics[height=.75\textheight]{images/tree3.pdf}
 		\label{fig:overview}
 		\caption{Overview of model-free reinforcement learning algorithms.}
 	\end{figure}
@@ -247,7 +250,6 @@
     Further, ACKTR is not only able to increase the performance and sample efficiency compared to TRPO but also compared to the synchronous version of A3C - A2C \cite{Mnih2016}. 
 	
     \section{Applications \label{sec:applications}}
-    \label{sec:games}
     One of the earliest success stories of deep reinforcement learning is TD-gammon \cite{Tesauro1994} achieving master level performance in backgammon.
     TD-gammon was starting with zero prior knowledge and improved by solely playing against itself.
     However, consecutive experiments aiming to reproduce the success in backgammon for other games such as chess, Go and checkers failed.
@@ -272,24 +274,28 @@
     Similar to AlphaZero they combine replay memory and MCTS, however they do not only search for the winning move but also the shortest one.
     For training they are working backwards and start scrambling a solved cube an increasing amount of time to create more complex samples after longer periods of training.\\
     Besides the Atari games other video games have been explored in the context of reinforcement learning. 
-    This includes TStarBots \cite{Sun2018} playing Starcraft II.
-    One of the biggest challenges in Starcraft II is its large observation and action space.
-    They evaluated DDDQN as well as PPO for this difficult task.
-    The DDDQN model utilizes a Mixture of Monte-Carlo and bootstrapped Q-Learning returns as optimization target in order to approach the sparsity and long delay of rewards.
-    Moreover, they apply multiple parallel environment instances to make training more efficient. 
-    When playing against the built in AI of Starcraft II, TStarBots performed well.
-    In games against human players, TStarBots wins rarely.
-    Similar to Starcraft II, Doom poses another high dimensional and complex task.
+%    This includes TStarBots \cite{Sun2018} playing Starcraft II.
+%    One of the biggest challenges in Starcraft II is its large observation and action space.
+%    They evaluated DDDQN as well as PPO for this difficult task.
+%    The DDDQN model utilizes a Mixture of Monte-Carlo and bootstrapped Q-Learning returns as optimization target in order to approach the sparsity and long delay of rewards.
+%    Moreover, they apply multiple parallel environment instances to make training more efficient. 
+%    When playing against the built in AI of Starcraft II, TStarBots performed well.
+%    In games against human players, TStarBots wins rarely.
+    This includes Doom, which poses a high dimensional and complex task.
    	A recent approach \cite{Schulze2018} combines DDQN with a recurrent neural network and PER.
     Moreover, they utilize snapshot ensembles in order to get multiple networks and more robust predictions.
     One limitation is their selected game mode, it does not require movement of the character.
     This avoids trading off between movement/exploration of the virtual space and defeating enemies. 
     Consequently, the network only needs to learn spatial awareness to focus closer targets first. 
     They showed improved results compared to previous methods, mainly based on the snapshot ensembling technique.
-    The most recent success story is OpenAI Five and OpenAI 1v1 bot for Dota 2 \cite{OpenAI2018}.
+    OpenAI's most recent success story is OpenAI Five and OpenAI 1v1 bot for Dota 2 \cite{OpenAI2018}.
     They use a highly scaled version of PPO incorporating an LSTM module in order to approach the complex problem space. 
     The training is done without prior human knowledge, but similar to AlphaZero the required computation makes it hard to reproduce the results reliably.
     OpenAI Five is able to defeat amateur human teams, whereas OpenAI 1v1 even defeats professional human players.  
+    For Starcraft II, DeepMind's AlphaStar \cite{Vinyals2019} showed that also in this challenging domain human-level performance is achievable.
+    Similar to AlphaGo, they combine supervised learning with reinforcement learning and incorporate an LSTM module such as OpenAI Five.
+    They further introduce a league system, which builds upon population-based reinforcement learning and ensures exploration as well as avoids forgetting. 
+    This technique enables AlphaStar to defeat professional human players.
     
     \section{Conclusion and Discussion \label{sec:discussion}}
     Deep reinforcement learning has shown significant improvements and developments in the last years. 
